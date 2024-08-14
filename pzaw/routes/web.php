@@ -1,38 +1,28 @@
 <?php
-
 use Illuminate\Support\Facades\Route;
 
 
-Route::get('/', function () {
-    return view('home', [
-        'date' => now(),
-    ]);
-})->name('home');
-
-Route::view('/about_us','about_us')->name('about_us');
-
-
-
-// WITANIE UŻYTKOWNIKÓW
-Route::get('greetings/{name?}', function ($name = null) {
-    if (empty($name)) {
-        echo "Witaj! Jak masz na imię?";
+Route::get('/{nazwa?}', function ($nazwa = null) {
+    if (empty($nazwa)){
+        echo "Nie masz imienie? Może się przedstawisz.";
     } else {
-        echo "Cześć $name! Miło mi Ciebie poznać :)";
+        echo "Witaj użytkowniku $nazwa.";
     }
-})->whereAlpha('name');
+})->whereAlpha('nazwa');
 
 
-// KODY BŁĘDÓW
-Route::get('admin-panel/{code}', function ($code) {
-    abort_if($code != 'test123', 401, 'Podano nieprawidłowy kod dostępu.');
-   
-    echo "Dostęp przyznany";
-})->whereAlphaNumeric('code');
+
+Route::get('/admin-panel/{kod}', function ($kod){
+    abort_if($kod != '2115', 401, 'Podano nieprawidłowy kod dostępu.');
+
+    echo "Dostęp przyznany.";
+})->whereAlphaNumeric('kod');
+
 
 
 // KALKULATOR
 Route::prefix('calc')->group(function () {
+    
     Route::get('/dodawanie/{num1}/{num2}', function ($num1, $num2) {
         $wynik = $num1 + $num2;
         echo $wynik;
@@ -77,9 +67,7 @@ route::get('reverse/{text}', function ($text){
 });
 
 
-
 // WŁASNE WORDLE
-
 $quotes = [
     1 => [
         'quote' => 'You were a boulder... I am a mountain.',
@@ -119,36 +107,3 @@ Route::get('quotes/{id}/guess/{hero}', function ($id , $hero) use ($quotes) {
         abort(404, 'Nie ma takiego id.');
     }
 })->whereNumber('id') -> whereAlpha('hero');
-
-
-
-
-// ↓↓ ZADANIA Z MODELU ↓↓ //
-use App\Models\Publication;
-
-$publications = [
-    $artyukul1 = new Publication([
-        'title' => '1111111111111111111',
-        'content' => '1111111111111111111',
-        'author' => '1111111111111111111'
-    ]),
-
-    $artyukul2 = new Publication([
-        'title' => '222222222222222222222222',
-        'content' => '222222222222222222222222',
-        'author' => '222222222222222222222222'
-    ]),
-
-    $artyukul3 = new Publication([
-        'title' => '333333333333333333333',
-        'content' => '333333333333333333333',
-        'author' => '333333333333333333333'
-    ])
-];
-
-Route::get('publication', function() use ($publications) {
-
-
-
-    dd($publications);
-});
